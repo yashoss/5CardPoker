@@ -2,7 +2,7 @@ require 'card'
 
 class Hand
 
-  attr_reader :type, :cards
+  attr_reader :type, :cards, :card_count
 
   HAND_RANKS = [
                 :high_card, :pair, :two_pair, :three_kind,
@@ -32,7 +32,26 @@ class Hand
   end
 
   def beats?(hand)
+    my_hand = HAND_RANKS.index(self.type)
+    opp_hand = HAND_RANKS.index(hand.type)
+    return true if my_hand > opp_hand
+    return false if my_hand < opp_hand
+    break_tie(hand)
+  end
 
+  protected
+
+  def sorted_hand
+    sorted = []
+    sorted_hash_pairs = @card_count.sort_by {|k,v| k}
+
+    4.downto(1) do |i|
+      sorted_hash_pairs.each_with_index do |card, j|
+        sorted << card[0] if i == j
+      end
+    end
+
+    sorted
   end
 
   private
@@ -74,6 +93,14 @@ class Hand
     straight? && flush?
   end
 
-
+  def break_tie(hand)
+    my_hand = self.sorted_hand
+    opp_hand = hand.sorted_hand
+    0.upto(my_hand.size - 1) do |i|
+      return true if my_hand[i] > opp_hand[i]
+      return false if my_hand[i] < opp_hand[i]
+    end
+    return nil
+  end
 
 end

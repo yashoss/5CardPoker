@@ -23,6 +23,10 @@ describe Hand do
   let(:card14) {double("card14", value: 5, suit: :s)}
   let(:card15) {double("card15", value: 2, suit: :h)}
 
+  let(:card16) {double("card16", value: 1, suit: :d)}
+  let(:card17) {double("card17", value: 1, suit: :c)}
+  let(:card18) {double("card18", value: 2, suit: :d)}
+
   let(:h_flush) { Hand.new([card6, card10, card15, card11, card5]) }
   let(:h_straight) { Hand.new([card6, card7, card8, card9, card10]) }
   let(:h_three) { Hand.new([card1, card4, card14, card6, card12]) }
@@ -64,7 +68,7 @@ describe Hand do
   describe "#beats?" do
     context "returns true if hand beats opponent hand" do
       it "evaluates hands of different types" do
-        expect(h_three.beats?(h_two)).to be true
+        expect(h_three.beats?(h_pair)).to be true
       end
 
       it "evaluates same types of hands by kicker" do
@@ -95,6 +99,13 @@ describe Hand do
         expect(hand2.beats?(hand1)).to be false
       end
     end
+
+    it "returns nil if tie" do
+      hand1 = Hand.new([card1, card4, card5, card12, card15])
+      hand2 = Hand.new([card13, card17, card18, card14, card16])
+      expect(hand1.beats?(hand2)).to eq(nil)
+    end
+
   end
 
 end

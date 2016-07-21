@@ -1,4 +1,4 @@
-require 'hand'
+require_relative 'card'
 
 class HumanPlayer
 
@@ -17,9 +17,11 @@ class HumanPlayer
   end
 
   def display_cards
+    hand = []
     @cards.each do |card|
-      puts card.to_s
+      hand << card.to_s
     end
+    puts "#{name}: #{hand.join(" ")}\n"
   end
 
   def gets_move
@@ -29,15 +31,18 @@ class HumanPlayer
 
   def discard
     puts "Which cards do you want to discard?"
-    trash = parse_input(gets.chomp)
+    trash = gets.chomp.split(",").map(&:to_i)
+    discarded_cards = []
     trash.each do |i|
-      @cards.delete_at(i)
+      discarded_cards << @cards[i]
     end
+    @cards -= discarded_cards
     trash.size
   end
 
   def see(amount)
     @bankroll -= amount
+    amount
   end
 
   def bet(amount)

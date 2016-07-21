@@ -110,7 +110,6 @@ describe Hand do
       hand1 = Hand.new([card1, card4, card5, card12, card15])
       hand2 = Hand.new([card13, card17, card18, card14, card16])
       expect(hand1.beats?(hand2)).to eq(nil)
-      
     end
 
   end

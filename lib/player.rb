@@ -17,6 +17,7 @@ class HumanPlayer
   end
 
   def display_cards
+    system('clear')
     hand = []
     @cards.each do |card|
       hand << card.to_s
@@ -25,8 +26,8 @@ class HumanPlayer
   end
 
   def gets_move
-    puts "C for Check, F for Fold, S for See, R for Raise"
-    move = gets.chomp
+    puts "[F] for Fold, [S] for See, [R] for Raise, [Any Key] for Check"
+    move = gets.chomp.upcase
   end
 
   def discard
@@ -46,8 +47,13 @@ class HumanPlayer
   end
 
   def bet(amount)
-    puts "How much would you like to raise?"
-    bet = gets.chomp.to_i + amount
+    bet = 0
+    loop do
+      puts "How much would you like to raise?"
+      bet = gets.chomp.to_i + amount
+      break unless bet >= @bankroll
+      puts "Not enough in bankroll. Try again."
+    end
     @bankroll -= bet
     bet
   end

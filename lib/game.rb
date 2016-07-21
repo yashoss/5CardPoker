@@ -14,6 +14,10 @@ class Poker
     @prev_bet = 0
   end
 
+  def play
+
+  end
+
   def play_turn
     @deck = Deck.new
     @deck.shuffle!
@@ -29,14 +33,13 @@ class Poker
     @prev_bet = 0
     @players.each do |player|
       next if player.fold
+      player.display_cards
       puts "#{player.name}'s turn to bet"
-      puts "Pot is #{pot}"
-      puts "Previous bet is #{prev_bet}"
+      puts "#{player.name}'s bankroll: #{player.bankroll}"
+      puts "Pot: #{pot}"
+      puts "Previous bet: #{prev_bet}"
       move = player.gets_move
       case move
-      when "C"
-        # retry unless prev_bet.zero?
-        next
       when "F"
         player.fold = true
       when "S"
@@ -51,6 +54,8 @@ class Poker
 
   def exchange_cards
     @players.each do |player|
+      next if player.fold
+      player.display_cards
       puts "#{player.name}'s turn to exchange cards"
       num = player.discard
       deal_cards(num, player)
@@ -59,12 +64,13 @@ class Poker
   end
 
   def deal_setup
+    print_shuffling
     @pot = 0
+    @players = @players.select{|player| player.bankroll > 0}
     @players.each do |player|
       player.fold = false
       player.cards = []
       deal_cards(5, player)
-      player.display_cards
     end
   end
 
@@ -88,10 +94,16 @@ class Poker
     end
 
     names = winning_player.map(&:name).join(" ")
-    puts "The winning players is/are #{names}."
+    puts "The winning players is #{names}."
     prize = pot / winning_player.size
     winning_player.each{|player| player.pay(prize)}
     puts "Prize is $#{prize}."
+  end
+
+  def print_shuffling
+    system('clear')
+    print "Shuffling"; sleep(1)
+    3.times { print "."; sleep(1)}
   end
 
 end

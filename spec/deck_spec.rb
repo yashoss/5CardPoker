@@ -20,9 +20,9 @@ describe Deck do
   end
 
   describe "#deal" do
-    let(:card1) { double('card1', value: 1, suit: :h) }
-    let(:card2) { double('card2', value: 2, suit: :h) }
-    let(:card3) { double('card3', value: 3, suit: :h) }
+    let(:card1) { double('card1', value: 2, suit: :h) }
+    let(:card2) { double('card2', value: 3, suit: :h) }
+    let(:card3) { double('card3', value: 4, suit: :h) }
 
     it "deals cards and returns array of cards" do
       hand = deck.deal(3)

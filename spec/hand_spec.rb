@@ -9,7 +9,7 @@ describe Hand do
   let(:card2) {double("card2", value: 9, suit: :s)}
   let(:card3) {double("card3", value: 7, suit: :d)}
   let(:card4) {double("card4", value: 5, suit: :c)}
-  let(:card5) {double("card5", value: 1, suit: :h)}
+  let(:card5) {double("card5", value: 14, suit: :h)}
 
   let(:card6) {double("card6", value: 13, suit: :h)}
   let(:card7) {double("card7", value: 12, suit: :s)}
@@ -18,17 +18,21 @@ describe Hand do
   let(:card10) {double("card10", value: 9, suit: :h)}
 
   let(:card11) {double("card11", value: 8, suit: :h)}
-  let(:card12) {double("card12", value: 1, suit: :s)}
+  let(:card12) {double("card12", value: 14, suit: :s)}
   let(:card13) {double("card13", value: 5, suit: :d)}
   let(:card14) {double("card14", value: 5, suit: :s)}
   let(:card15) {double("card15", value: 2, suit: :h)}
 
-  let(:card16) {double("card16", value: 1, suit: :d)}
-  let(:card17) {double("card17", value: 1, suit: :c)}
+  let(:card16) {double("card16", value: 14, suit: :d)}
+  let(:card17) {double("card17", value: 14, suit: :c)}
   let(:card18) {double("card18", value: 2, suit: :d)}
+  let(:card19) {double("card19", value: 3, suit: :c)}
+  let(:card20) {double("card20", value: 4, suit: :s)}
 
   let(:h_flush) { Hand.new([card6, card10, card15, card11, card5]) }
   let(:h_straight) { Hand.new([card6, card7, card8, card9, card10]) }
+  let(:h_straight_low) { Hand.new([card17, card18, card19, card20, card1]) }
+  let(:h_straight_high) { Hand.new([card9, card8, card7, card6, card5]) }
   let(:h_three) { Hand.new([card1, card4, card14, card6, card12]) }
   let(:h_four) { Hand.new([card1, card4, card14, card13, card12]) }
   let(:h_pair) { Hand.new([card1, card2, card3, card4, card5]) }
@@ -52,6 +56,8 @@ describe Hand do
 
       it "finds straights" do
         expect(h_straight.type).to eq(:straight)
+        expect(h_straight_low.type).to eq(:straight)
+        expect(h_straight_high.type).to eq(:straight)
       end
 
       it "finds three of a kinds" do
@@ -79,7 +85,7 @@ describe Hand do
       end
 
       it "evaluates different pairs" do
-        card = double("card", value: 1, suit: :c)
+        card = double("card", value: 14, suit: :c)
         hand1 = h_pair #pair of 5
         hand2 = Hand.new([card, card12, card8, card9, card10]) #pair of Aces
         expect(hand2.beats?(hand1)).to be true

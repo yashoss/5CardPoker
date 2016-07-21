@@ -2,7 +2,7 @@ require_relative 'card'
 
 class Hand
 
-  attr_reader :type, :cards, :card_count
+  attr_reader :type, :cards, :card_data
 
   HAND_RANKS = [
                 :high_card, :pair, :two_pair, :three_kind,
@@ -12,11 +12,8 @@ class Hand
 
   def initialize(cards)
     @cards = cards
-    @card_count = Hash.new {|h,k| h[k] = 0}
-    @cards.each do |card|
-      @card_count[card.value] += 1
-    end
-    @type = evaluate
+    @card_data = Hash.new {|h,k| h[k] = 0}
+    generate_card_data
   end
 
   def evaluate
@@ -34,6 +31,7 @@ class Hand
   def beats?(hand)
     my_hand = HAND_RANKS.index(self.type)
     opp_hand = HAND_RANKS.index(hand.type)
+
     return true if my_hand > opp_hand
     return false if my_hand < opp_hand
     break_tie(hand)
@@ -43,7 +41,7 @@ class Hand
 
   def sorted_hand
     sorted = []
-    sorted_hash_pairs = @card_count.sort_by {|k,v| k}
+    sorted_hash_pairs = @card_data.sort_by {|k,v| k}
 
     4.downto(1) do |i|
       sorted_hash_pairs.each_with_index do |card, j|
@@ -56,29 +54,38 @@ class Hand
 
   private
 
+  def generate_card_data
+    @cards.each do |card|
+      @card_data[card.value] += 1
+    end
+    @type = evaluate
+  end
+
   def pair?
-    @card_count.values.count(2) == 1
+    @card_data.values.count(2) == 1
   end
 
   def two_pair?
-    @card_count.values.count(2) == 2
+    @card_data.values.count(2) == 2
   end
 
   def three_kind?
-    @card_count.has_value?(3)
+    @card_data.has_value?(3)
   end
 
   def four_kind?
-    @card_count.has_value?(4)
+    @card_data.has_value?(4)
   end
 
   def full_house?
-    @card_count.has_value?(3) && @card_count.has_value?(2)
+    @card_data.has_value?(3) && @card_data.has_value?(2)
   end
 
   def straight?
-    return false if @card_count.size < 5
-    card_values = @card_count.keys.sort
+    return false if @card_data.size < 5
+    card_values = @card_data.keys.sort
+    return true if card_values == [2, 3, 4, 5, 14] #handles Ace -> 5 straight
+    
     card_values[0..-2].each_with_index do |val, i|
       return false unless card_values[i + 1] - val == 1
     end

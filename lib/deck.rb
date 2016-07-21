@@ -14,7 +14,7 @@ class Deck
 
   def populate_deck
     [:h, :d, :c, :s].each do |suit|
-      (1..13).each do |value|
+      (2..14).each do |value|
         @cards << Card.new(value, suit)
       end
     end

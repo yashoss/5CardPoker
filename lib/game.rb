@@ -99,6 +99,8 @@ end
 if __FILE__ == $PROGRAM_NAME
   player1 = HumanPlayer.new("Marc")
   player2 = HumanPlayer.new("Yasin")
-  game = Poker.new([player1, player2])
+  player3 = HumanPlayer.new("Sean")
+  player4 = HumanPlayer.new("John")
+  game = Poker.new([player1, player2, player3, player4])
   game.play_turn
 end

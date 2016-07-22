@@ -31,25 +31,52 @@ class Poker
 
   def bet_round
     @prev_bet = 0
-    @players.each do |player|
-      next if player.fold
-      player.display_cards
-      puts "#{player.name}'s turn to bet"
-      puts "#{player.name}'s bankroll: #{player.bankroll}"
-      puts "Pot: #{pot}"
-      puts "Previous bet: #{prev_bet}"
-      move = player.gets_move
-      case move
-      when "F"
-        player.fold = true
-      when "S"
-        @pot += player.see(prev_bet)
-      when "R"
-        bet = player.bet(prev_bet)
-        @pot += bet
-        @prev_bet = bet
+    bet_initialized = false
+    better = nil
+
+    loop do
+
+      @players.each do |player|
+        next if player.fold
+
+        if player == better
+          bet_initialized = false
+        end
+
+        break if player == better
+
+        move = get_player_move(player)
+
+        case move
+        when "F"
+          player.fold = true
+
+        when "S"
+          @pot += player.see(prev_bet)
+
+        when "R"
+          bet = player.bet(prev_bet)
+          @pot += bet
+          @prev_bet = bet
+          better = player
+          bet_initialized = true
+        else
+          next
+        end
+
       end
+
+      break unless bet_initialized
     end
+  end
+
+  def get_player_move(player)
+    player.display_cards
+    puts "#{player.name}'s turn to bet"
+    puts "#{player.name}'s bankroll: #{player.bankroll}"
+    puts "Pot: #{pot}"
+    puts "Previous bet: #{prev_bet}"
+    player.gets_move
   end
 
   def exchange_cards
@@ -93,8 +120,9 @@ class Poker
       end
     end
 
-    names = winning_player.map(&:name).join(" ")
-    puts "The winning players is #{names}."
+    names = winning_player.map(&:name).uniq
+    puts "The winning player is #{names.first}." if names.size == 1
+    puts "Winning players are #{names.join(", ")}" if names.size > 1
     prize = pot / winning_player.size
     winning_player.each{|player| player.pay(prize)}
     puts "Prize is $#{prize}."
